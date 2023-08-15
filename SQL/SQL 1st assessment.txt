@@ -1,0 +1,167 @@
+1ST ASSESSMENT:
+
+
+ROADMAPS:
+14 employees in total.
+
+1.
+8 managers -> need titles
+SELECT CONCAT (e.first_name,' ',e.last_name) AS 'Full Name', t.title
+FROM employees e
+JOIN dept_manager dm ON dm.emp_no = e.emp_no
+LEFT JOIN titles t ON t.emp_no = e.emp_no;
+
+
+2. salaries of all employees and their department name
+Show full name (first name and last name concatted) then show their salaries and their departments. Some outputs will be null so ensure all outputs are recorded.
+
+SELECT CONCAT (e.first_name,' ',e.last_name) AS 'Full Name', MAX(s.salary) AS salary, d.dept_name
+FROM employees e
+LEFT JOIN salaries s ON s.emp_no = e.emp_no
+LEFT JOIN dept_emp de ON de.emp_no = e.emp_no
+LEFT JOIN departments d ON d.dept_no = de.dept_no
+GROUP BY e.emp_no;
+
+3. Create a SQL statement to show the hire date and birth date who belongs to HR
+department ("Human Resources" from dept_name or "d003" from dept_no)
+Hire date, birth date
+
+SELECT CONCAT (e.first_name,' ',e.last_name) AS 'Full Name', e.hire_date, e.birth_date
+FROM employees e
+JOIN dept_emp de ON de.emp_no = e.emp_no
+UNION
+LEFT JOIN dept_manager dm ON dm.emp_no = e.emp_no
+WHERE de.dept_no = 'd003'; (This gives 1 answer who is kyochi emp_no = 10005 which is right but should be getting 3 answers)
+
+NEED 3 ANSWERS, 1 EMPLOYEE AND 2 MANAGERS. Use UNION
+
+
+SELECT CONCAT (e.first_name,' ',e.last_name) AS 'Full Name', dept_name, hire_date, birth_date
+FROM employees e
+INNER JOIN dept_manager dm ON e.emp_no = dm.emp_no
+INNER JOIN departments d ON dm.dept_no = d.dept_no
+WHERE dept_name = "Human Resources"
+UNION
+SELECT CONCAT (e.first_name,' ',e.last_name) AS 'Full Name', dept_name, hire_date, birth_date 
+FROM employees e
+INNER JOIN dept_emp de ON e.emp_no = de.emp_no
+INNER JOIN departments d ON de.dept_no = d.dept_no
+WHERE dept_name = "Human Resources";
+
+
+
+4. Create a SQL statement to show all departments and their department’s managers.
+
+SELECT CONCAT (e.first_name,' ',e.last_name) AS 'Full Name', d.dept_name , dm.emp_no 
+FROM departments d
+LEFT JOIN dept_manager dm ON dm.dept_no = d.dept_no
+LEFT JOIN employees e ON e.emp_no = dm.emp_no;
+
+5. Create a SQL statement to show a list of HR’s employees who were hired after 1986
+
+
+SELECT CONCAT (e.first_name,' ',e.last_name) AS 'Full Name', dept_name, hire_date, birth_date
+FROM employees e
+INNER JOIN dept_manager dm ON e.emp_no = dm.emp_no
+INNER JOIN departments d ON dm.dept_no = d.dept_no
+WHERE dept_name = "Human Resources"
+UNION
+SELECT CONCAT (e.first_name,' ',e.last_name) AS 'Full Name', dept_name, hire_date, birth_date
+FROM employees e
+INNER JOIN dept_emp de ON e.emp_no = de.emp_no
+INNER JOIN departments d ON de.dept_no = d.dept_no
+WHERE dept_name = "Human Resources" AND YEAR(hire_date) > 1986;
+
+
+6. (!NOT DONE YET!) Create a SQL statement to increase any employee’s salary up to 2%. Assume the
+employee has just phoned in with his/her last name. 
+
+CREATE VIEW q6 AS
+SELECT CONCAT (e.first_name,' ',e.last_name) AS 'Full Name', s.salary
+FROM employees e
+LEFT JOIN salaries s ON s.emp_no = e.emp_no;
+
+CREATE PROCEDURE salaryraise @last_name VARCHAR(16)
+AS
+SELECT full
+FROM employees
+WHERE last_name = @last_name
+GO
+
+
+7. Create a SQL statement to delete employee’s record who belongs to marketing
+department and name start with A
+
+CREATE TEMPORARY TABLE temp_marketingnotA (
+    first_name VARCHAR(50),
+    last_name VARCHAR(50),
+    dept_name VARCHAR(50),
+    hire_date DATE NULL,
+    birth_date DATE
+);
+
+INSERT INTO temp_marketingnotA
+    SELECT e.first_name, e.last_name, dept_name, hire_date, birth_date
+    FROM employees e
+    INNER JOIN dept_manager dm ON e.emp_no = dm.emp_no
+    INNER JOIN departments d ON dm.dept_no = d.dept_no
+    WHERE dept_name = "Human Resources"
+    UNION
+    SELECT e.first_name, e.last_name, dept_name, hire_date, birth_date
+    FROM employees e
+    INNER JOIN dept_emp de ON e.emp_no = de.emp_no
+    INNER JOIN departments d ON de.dept_no = d.dept_no
+    WHERE dept_name = "Human Resources";
+
+DELETE FROM temp_marketingnotA
+WHERE LEFT(first_name,1) LIKE "A";
+
+8.(!FIX THIS!) Create a database view to list the full names of all departments’ managers, and their salaries.
+
+CREATE VIEW mangsal AS
+SELECT CONCAT (e.first_name,' ',e.last_name) AS 'Full Name', s.salary, s.to_date,
+RANK() OVER(PARTITION BY dm.emp_no ORDER BY s.to_date DESC) Rank
+FROM dept_manager dm
+JOIN salaries s ON s.emp_no = dm.emp_no
+JOIN employees e ON e.emp_no = s.emp_no;
+
+
+SELECT * FROM mangsal
+WHERE rank = 1;
+
+THIS IS WRONG I WANT 8 RECORDS. (Or at least I want a value for all departments even if there are no managers)
+
+
+SELECT d.dept_name, CONCAT (e.first_name,' ',e.last_name) as Full_name, s.salary
+FROM departments d
+LEFT JOIN dept_manager dm ON dm.dept_no = d.dept_no
+JOIN employees e ON e.emp_no = dm.emp_no
+JOIN salaries s ON s.emp_no = e.emp_no;
+
+
+SELECT d.dept_name, dm.dept_no, dm.emp_no
+FROM departments d
+LEFT JOIN dept_manager dm ON dm.dept_no = d.dept_no
+UNION
+SELECT d.dept_name, d.dept_no, dm.emp_no
+FROM departments d
+JOIN employees e ON e.emp_no = dm.emp_no;
+
+
+9.Create a database view to list all departments and their department’s managers, who were hired between 1980 and 1990.
+
+CREATE VIEW mangyears AS 
+SELECT d.dept_name, CONCAT (e.first_name,' ', e.last_name) AS 'Full Name', e.hire_date
+FROM departments d
+LEFT JOIN dept_manager dm ON dm.dept_no = d.dept_no
+LEFT JOIN employees e ON e.emp_no = dm.emp_no
+WHERE e.hire_date BETWEEN '1980-01-01' AND '1990-12-31'
+ORDER BY dept_name;
+SELECT * FROM mangyears;
+
+10. Create a SQL statement to increase salaries of all department’s managers up to 10%
+who are working since 1990.
+
+
+So this is a mash up of q6,8 and 9
+Yet to do q6 and q8.

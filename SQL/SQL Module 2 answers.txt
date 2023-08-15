@@ -1,0 +1,235 @@
+
+Part 1 B
+
+
+
+
+
+Creating the tables:
+/* Creating Supervisor table with primary key supervisor_id
+*/
+
+CREATE TABLE Supervisor (
+  supervisor_id INT PRIMARY KEY,
+  supervisor_name VARCHAR(100)
+);
+
+/* Creating AreaSalesRepresentative table with primary key representative_id and foreign key supervisor_id from the Supervisor table
+*/
+
+CREATE TABLE AreaSalesRepresentative (
+  representative_id INT PRIMARY KEY,
+  representative_name VARCHAR(100),
+  geographical_sales_area VARCHAR(100),
+  supervisor_id INT,
+  FOREIGN KEY (supervisor_id) REFERENCES Supervisor (supervisor_id)
+);
+
+/* Creating ChiefSalesperson table with primary key chief_salesperson_id
+*/
+
+CREATE TABLE ChiefSalesperson (
+  chief_salesperson_id INT PRIMARY KEY,
+  chief_salesperson_name VARCHAR(100),
+  geographical_sales_area VARCHAR(100)
+);
+
+
+-- Creating Property table with primary key property_id and foreign key representative_id
+CREATE TABLE Property (
+  property_id INT PRIMARY KEY,
+  representative_id INT,
+  property_type VARCHAR(50),
+  health_safety_regs VARCHAR(100),
+  FOREIGN KEY (representative_id) REFERENCES AreaSalesRepresentative (representative_id)
+);
+
+
+
+/* Creating Customer table with primary key customer_id and foreign key representative_id from the AreaSalesRepresentative table
+*/
+
+CREATE TABLE Customer (
+  customer_id INT PRIMARY KEY,
+  customer_name VARCHAR(100),
+  representative_id INT,
+  FOREIGN KEY (representative_id) REFERENCES AreaSalesRepresentative (representative_id)
+);
+
+/* Creating SalesPerformance table with primary key performance_id and foreign key representative_id from the AreaSalesRepresentative table
+*/
+
+CREATE TABLE SalesPerformance (
+  performance_id INT PRIMARY KEY,
+  representative_id INT,
+  geographical_sales_area VARCHAR(100),
+  sales_targets INT,
+  FOREIGN KEY (representative_id) REFERENCES AreaSalesRepresentative (representative_id)
+);
+
+
+
+
+/* Double checking my tables */
+
+DESCRIBE Supervisor;
+DESCRIBE AreaSalesRepresentative;
+DESCRIBE ChiefSalesperson;
+DESCRIBE Property;
+DESCRIBE Customer;
+DESCRIBE SalesPerformance;
+
+
+Part 2 A
+
+Inserting dummy data into the tables:
+
+-- Dummy data for Supervisor table
+INSERT INTO Supervisor (supervisor_id, supervisor_name)
+VALUES
+  (1, 'Coach Ukai Keishin'),
+  (2, 'Coach Ukai Ikkei'),
+  (3, 'Coach Takeda Ittetsu'),
+  (4, 'Coach Washijo Tanji'),
+  (5, 'Coach Ushijima Wakatoshi'),
+  (6, 'Coach Aoba Johsai'),
+  (7, 'Coach Nekoma'),
+  (8, 'Coach Date Tech'),
+  (9, 'Coach Shiratorizawa'),
+  (10, 'Coach Karasuno');
+
+-- Dummy data for AreaSalesRepresentative table
+INSERT INTO AreaSalesRepresentative (representative_id, representative_name, geographical_sales_area, supervisor_id)
+VALUES
+  (1, 'Hinata Shoyo', 'Tokyo', NULL),
+  (2, 'Kageyama Tobio', 'Sendai', NULL),
+  (3, 'Sugawara Koushi', 'Tokyo', NULL),
+  (4, 'Oikawa Tooru', 'Tokyo', NULL),
+  (5, 'Bokuto Koutarou', 'Tokyo', 5),
+  (6, 'Akaashi Keiji', 'Sendai', 6),
+  (7, 'Yamaguchi Tadashi', 'Sendai', 6),
+  (8, 'Kuroo Tetsurou', 'Tokyo', 7),
+  (9, 'Kenma Kozume', 'Tokyo', 7),
+  (10, 'Iwaizumi Hajime', 'Tokyo', 8);
+
+
+-- Dummy data for ChiefSalesperson table
+INSERT INTO ChiefSalesperson (chief_salesperson_id, chief_salesperson_name, geographical_sales_area)
+VALUES
+  (1, 'Coach Ukai Keishin', 'Tokyo'),
+  (2, 'Coach Ukai Ikkei', 'Sendai'),
+  (3, 'Coach Takeda Ittetsu', 'Tokyo'),
+  (4, 'Coach Washijo Tanji', 'Tokyo'),
+  (5, 'Coach Ushijima Wakatoshi', 'Tokyo'),
+  (6, 'Coach Aoba Johsai', 'Sendai'),
+  (7, 'Coach Nekoma', 'Sendai'),
+  (8, 'Coach Date Tech', 'Tokyo'),
+  (9, 'Coach Shiratorizawa', 'Tokyo'),
+  (10, 'Coach Karasuno', 'Tokyo');
+
+-- Dummy data for Customer table
+INSERT INTO Customer (customer_id, customer_name, representative_id)
+VALUES
+  (1, 'Tanaka Ryuunosuke', 5),
+  (2, 'Yachi Hitoka', 5),
+  (3, 'Aone Takanobu', 6),
+  (4, 'Kanoka Amanai', 6),
+  (5, 'Kiyoko Shimizu', 7),
+  (6, 'Tsukishima Kei', 7),
+  (7, 'Daichi Sawamura', 8),
+  (8, 'Nishinoya Yuu', 8),
+  (9, 'Asahi Azumane', 9),
+  (10, 'Hinata Tobio', 10);
+
+-- Dummy data for SalesPerformance table
+INSERT INTO SalesPerformance (performance_id, representative_id, geographical_sales_area, sales_targets)
+VALUES
+  (1, 5, 'Tokyo', 500000),
+  (2, 6, 'Sendai', 450000),
+  (3, 7, 'Sendai', 600000),
+  (4, 8, 'Tokyo', 550000),
+  (5, 9, 'Tokyo', 400000),
+  (6, 10, 'Tokyo', 350000),
+  (7, 5, 'Tokyo', 550000),
+  (8, 6, 'Sendai', 480000),
+  (9, 7, 'Sendai', 620000),
+  (10, 8, 'Tokyo', 580000);
+
+-- Dummy data for Property table
+INSERT INTO Property (property_id, representative_id, property_type, health_safety_regs)
+VALUES
+  (1, 5, 'House', 'Compliant'),
+  (2, 6, 'Apartment', 'Compliant'),
+  (3, 7, 'Bungalow', 'Compliant'),
+  (4, 8, 'Land', 'Not Applicable'),
+  (5, 9, 'Commercial Property', 'Compliant'),
+  (6, 5, 'House', 'Compliant'),
+  (7, 6, 'Apartment', 'Compliant'),
+  (8, 7, 'Bungalow', 'Compliant'),
+  (9, 8, 'Land', 'Not Applicable'),
+  (10, 9, 'Commercial Property', 'Compliant');
+
+Part 2 b
+
+1. Display names of representatives, details of the properties they represent, and 
+names of their supervisors
+
+SELECT
+    ASR.representative_name,
+    P.property_id,
+    P.property_type,
+    P.health_safety_regs,
+    SUPER.supervisor_name
+FROM
+    AreaSalesRepresentative AS ASR
+JOIN Property AS P ON ASR.representative_id = P.representative_id
+LEFT JOIN Supervisor AS SUPER ON ASR.supervisor_id = SUPER.supervisor_id;
+
+Output:
+
++---------------------+-------------+---------------------+--------------------+--------------------------+
+| representative_name | property_id | property_type       | health_safety_regs | supervisor_name          |
++---------------------+-------------+---------------------+--------------------+--------------------------+
+| Bokuto Koutarou     |           1 | House               | Compliant          | Coach Ushijima Wakatoshi |
+| Akaashi Keiji       |           2 | Apartment           | Compliant          | Coach Aoba Johsai        |
+| Yamaguchi Tadashi   |           3 | Bungalow            | Compliant          | Coach Aoba Johsai        |
+| Kuroo Tetsurou      |           4 | Land                | Not Applicable     | Coach Nekoma             |
+| Kenma Kozume        |           5 | Commercial Property | Compliant          | Coach Nekoma             |
+| Bokuto Koutarou     |           6 | House               | Compliant          | Coach Ushijima Wakatoshi |
+| Akaashi Keiji       |           7 | Apartment           | Compliant          | Coach Aoba Johsai        |
+| Yamaguchi Tadashi   |           8 | Bungalow            | Compliant          | Coach Aoba Johsai        |
+| Kuroo Tetsurou      |           9 | Land                | Not Applicable     | Coach Nekoma             |
+| Kenma Kozume        |          10 | Commercial Property | Compliant          | Coach Nekoma             |
++---------------------+-------------+---------------------+--------------------+--------------------------+
+
+
+2. Display details of customers together with details of their areas and names of the 
+managers of their areas.
+
+SELECT
+    C.customer_name,
+    ASR.geographical_sales_area,
+    SUPER.supervisor_name
+FROM
+    Customer AS C
+JOIN AreaSalesRepresentative AS ASR ON C.representative_id = ASR.representative_id
+LEFT JOIN Supervisor AS SUPER ON ASR.supervisor_id = SUPER.supervisor_id;
+
+
+
+Output:
+
++-------------------+-------------------------+--------------------------+
+| customer_name     | geographical_sales_area | supervisor_name          |
++-------------------+-------------------------+--------------------------+
+| Tanaka Ryuunosuke | Tokyo                   | Coach Ushijima Wakatoshi |
+| Yachi Hitoka      | Tokyo                   | Coach Ushijima Wakatoshi |
+| Aone Takanobu     | Sendai                  | Coach Aoba Johsai        |
+| Kanoka Amanai     | Sendai                  | Coach Aoba Johsai        |
+| Kiyoko Shimizu    | Sendai                  | Coach Aoba Johsai        |
+| Tsukishima Kei    | Sendai                  | Coach Aoba Johsai        |
+| Daichi Sawamura   | Tokyo                   | Coach Nekoma             |
+| Nishinoya Yuu     | Tokyo                   | Coach Nekoma             |
+| Asahi Azumane     | Tokyo                   | Coach Nekoma             |
+| Hinata Tobio      | Tokyo                   | Coach Date Tech          |
++-------------------+-------------------------+--------------------------+
