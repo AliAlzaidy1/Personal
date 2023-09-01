@@ -1,0 +1,131 @@
+Exercise sheet 1
+
+1.
+Name = "Ali"
+Age = 24
+
+2.
+print(Name,Age)
+
+3.
+print(Name, " Is ", Age, " Years old")
+
+4.
+Age = 12
+print(Age)
+
+5.
+m = 1
+c = 15
+#x = 0.5
+
+#y = m * x + c
+#print(y)
+
+
+## Alternatively if you want to choose your own x
+
+x = float(input( "Choose a value for x"))
+y = m * x + c
+print(y)
+
+6.
+isRaining = True
+type(isRaining)
+
+7.
+happy = False
+
+8.
+isRaininghappy = isRaining and happy
+isRainingnothappy = isRaining and not happy
+Notisraininghappy = isRaining and happy
+NotisRainingnothappy = not(isRaining and happy)
+
+print(isRaininghappy,isRainingnothappy,Notisraininghappy,NotisRainingnothappy )
+
+
+
+
+isRaininghappy = isRaining or happy
+isRainingnothappy = isRaining or not happy
+Notisraininghappy = isRaining or happy
+NotisRainingnothappy = not(isRaining or happy)
+
+print(isRaininghappy,isRainingnothappy,Notisraininghappy,NotisRainingnothappy )
+
+
+Exercise sheet 2
+
+1.
+
+n = 0
+while n < 10:
+    n10 = n + 10
+    print (n , n10)
+    n = n + 1
+
+2.
+
+n = 0
+while n < 10:
+    ndouble = n * 2
+    print (n , ndouble)
+    n = n + 1
+
+3.
+
+
+# x=int(input("Choose a number between and inclusive of 1 and 7"))
+
+# if x == 1:
+#     print("It's Monday")
+# elif x == 2:
+#     print("It's Tuesday")
+# elif x == 3:
+#      print("It's Wednesday")
+# elif x == 4:
+#      print("It's Thursday")
+# elif x == 5:
+#     print("It's Friday")
+# elif x == 6:
+#     print("It's Saturday")
+# elif x == 7:
+#     print ("It's Sunday")
+#else:
+#   print("You didn't pick a number between 1 and 7")
+
+#OR IF AS QUESTION ASKS
+
+
+x=int(input("Choose a number between and inclusive of 1 and 7"))
+
+if x >= 1 and x <= 5:
+    print("It's a weekday")
+elif x == 6 or x == 7:
+    print("It's the weekend")
+else:
+    print("You didn't pick a number between 1 and 7")
+
+4.
+
+newx = 0
+while newx<7:
+    newx = newx + 1
+    if newx >= 1 and newx<=5:
+        print("It's a weekday")
+    elif newx == 6 or newx == 7:
+        print("It's the weekend")
+    # This part of the code will only work if I allow newx to be greater than 7 in the while loop
+    # else:
+    #     print ("End of the line!")
+    #     break
+
+5.
+
+x = int(input("Pick any year"))
+
+if x % 4 ==0 and (x % 100 > 0 or x % 400 == 0):
+    print("This year is a leap year")
+else:
+    print("This year is not a leap year")
